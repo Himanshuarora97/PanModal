@@ -118,11 +118,21 @@ public extension PanModalPresentable where Self: UIViewController {
     }
 
     func panModalWillDismiss() {
-
+        self.dismiss(animated: true, completion: nil)
     }
 
     func panModalDidDismiss() {
 
     }
+    
+    var backgroundStyle: PanModalBackgroundStyle {
+        return .solid(color: .black, alpha: 0.7)
+    }
+    
+    var isPanModalCloseable: Bool {
+        return true
+    }
+    
+    
 }
 #endif
