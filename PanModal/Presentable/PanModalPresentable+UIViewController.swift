@@ -58,6 +58,10 @@ public extension PanModalPresentable where Self: UIViewController {
     func panModalAnimate(_ animationBlock: @escaping AnimationBlockType, _ completion: AnimationCompletionType? = nil) {
         PanModalAnimator.animate(animationBlock, config: self, completion)
     }
+    
+    func addViewToContainerView(_ view: UIView) {
+        presentedVC?.addViewToContainerView(view: view)
+    }
 
 }
 #endif

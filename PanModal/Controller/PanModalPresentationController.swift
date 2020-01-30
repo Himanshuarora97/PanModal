@@ -307,6 +307,14 @@ public extension PanModalPresentationController {
         observe(scrollView: presentable?.panScrollable)
         configureScrollViewInsets()
     }
+    
+    func addViewToContainerView(view: UIView) {
+        guard let containerView = containerView else {
+            return
+        }
+        containerView.addSubview(view)
+        containerView.bringSubviewToFront(view)
+    }
 
 }
 
