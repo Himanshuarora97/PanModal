@@ -83,6 +83,12 @@ open class PanModalPresentationController: UIPresentationController {
      The y value for the long form presentation state
      */
     private var longFormYPosition: CGFloat = 0
+    
+    /**
+     To determine whether it pan modal is closeable or not
+     */
+    private var isCloseable = true
+    
 
     /**
      Determine anchored Y postion based on the `anchorModalToLongForm` flag
@@ -106,13 +112,16 @@ open class PanModalPresentationController: UIPresentationController {
      */
     private lazy var backgroundView: DimmedView = {
         let view: DimmedView
-        if let color = presentable?.panModalBackgroundColor {
-            view = DimmedView(dimColor: color)
-        } else {
-            view = DimmedView()
+        switch presentable?.backgroundStyle {
+            case let .solid(color, alpha)?:
+                view = SolidDimmedView(color: .black, alpha: 0.7)
+            case let .blur(style, degree)?:
+                view = BlurDimmedView(style: style, degree: degree)
+            default:
+                view = SolidDimmedView(color: .black, alpha: 0.7)
         }
         view.didTap = { [weak self] _ in
-            if self?.presentable?.allowsTapToDismiss == true {
+            if(self?.isCloseable ?? true) {
                 self?.dismissPresentedViewController()
             }
         }
@@ -340,7 +349,7 @@ private extension PanModalPresentationController {
         containerView.addSubview(presentedView)
         containerView.addGestureRecognizer(panGestureRecognizer)
 
-        if presentable.showDragIndicator {
+        if presentable.showDragIndicator && isCloseable {
             addDragIndicatorView(to: presentedView)
         }
 
@@ -421,7 +430,8 @@ private extension PanModalPresentationController {
         longFormYPosition = layoutPresentable.longFormYPos
         anchorModalToLongForm = layoutPresentable.anchorModalToLongForm
         extendsPanScrolling = layoutPresentable.allowsExtendedPanScrolling
-
+        isCloseable = layoutPresentable.isPanModalCloseable
+        
         containerView?.isUserInteractionEnabled = layoutPresentable.isUserInteractionEnabled
     }
 
@@ -567,6 +577,11 @@ private extension PanModalPresentationController {
 
         var yDisplacement = panGestureRecognizer.translation(in: presentedView).y
 
+        
+        if !isCloseable && yDisplacement > 0 {    //this disables drag down effect
+            return
+        }
+        
         /**
          If the presentedView is not anchored to long form, reduce the rate of movement
          above the threshold
@@ -655,7 +670,7 @@ private extension PanModalPresentationController {
 
         /**
          Once presentedView is translated below shortForm, calculate yPos relative to bottom of screen
-         and apply percentage to backgroundView alpha
+         and apply percentage to backgroundView state
          */
         backgroundView.dimState = .percent(1.0 - (yDisplacementFromShortForm / presentedView.frame.height))
     }
@@ -677,10 +692,13 @@ private extension PanModalPresentationController {
      Dismiss presented view
      */
     func dismissPresentedViewController() {
-        presentable?.panModalWillDismiss()
-        presentedViewController.dismiss(animated: true) { [weak self] in
-            self?.presentable?.panModalDidDismiss()
+        if(!isCloseable) {
+            return
         }
+        presentable?.panModalWillDismiss()
+//        presentedViewController.dismiss(animated: true) { [weak self] in
+//            self?.presentable?.panModalDidDismiss()
+//        }
     }
 }
 

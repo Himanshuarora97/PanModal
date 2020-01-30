@@ -172,6 +172,26 @@ public protocol PanModalPresentable: AnyObject {
      Default value is true.
      */
     var showDragIndicator: Bool { get }
+    
+    
+    /**
+     The background view style.
+     - Note: This is only utilized at the very start of the transition.
+     Default Value is solid black with alpha 0.7.
+     */
+    var backgroundStyle: PanModalBackgroundStyle { get }
+    
+    /**
+     A flag to determine if pan modal appears it will be closeable or not. Modifed function according to this function are -
+     1. panwilldismiss
+     2. showdragindicatior
+     3. gesturecontroller(to only allow drag towards upward)
+     
+     Default value is true.
+     */
+    
+    var isPanModalCloseable: Bool { get }
+
 
     /**
      Asks the delegate if the pan modal should respond to the pan modal gesture recognizer.
