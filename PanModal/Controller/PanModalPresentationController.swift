@@ -220,7 +220,10 @@ open class PanModalPresentationController: UIPresentationController {
     }
 
     override public func presentationTransitionDidEnd(_ completed: Bool) {
-        if completed { return }
+        if completed {
+            presentable?.getContainerView(containerView: containerView)
+            return
+        }
 
         backgroundView.removeFromSuperview()
     }

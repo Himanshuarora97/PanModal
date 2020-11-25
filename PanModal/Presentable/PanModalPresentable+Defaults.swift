@@ -133,6 +133,9 @@ public extension PanModalPresentable where Self: UIViewController {
         return true
     }
     
+    func getContainerView(containerView: UIView?) {
+        
+    }
     
 }
 #endif

@@ -253,5 +253,8 @@ public protocol PanModalPresentable: AnyObject {
      Default value is an empty implementation.
      */
     func panModalDidDismiss()
+    
+    
+    func getContainerView(containerView: UIView?)
 }
 #endif
